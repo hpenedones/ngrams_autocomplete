@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<script src="jquery.min.js"></script>
+		<script src="jquery.typewatch.js"></script>
+	</head>
+	<body>
+		<div>
+			Probabilistic AutoSuggest<br />
+			<input type="SEARCH" size="80" placeholder="Enter text" />
+		</div>
+			
+		<div id="suggestions"></div>
+	</body>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('input').typeWatch({
+callback: function(value) {
+
+
+var jqxhr = $.get('http://localhost:8080/ngrams/' + value + '/' );
+
+jqxhr.always(function(res) {
+	
+        $("div#suggestions").html(res.toString()); 
+	}
+	);
+
+				},
+wait : 500,
+highlight: true,
+captureLength: 0
+			});
+		});
+	</script>
+</html>
