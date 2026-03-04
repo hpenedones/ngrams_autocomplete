@@ -8,7 +8,7 @@ The model is trained on a corpus of queries (TSV format) and learns character-le
 
 ## Dependencies
 
-- Python 2.x
+- Python 3.x
 - [bottle](https://bottlepy.org/) — `pip install bottle`
 
 ## Usage

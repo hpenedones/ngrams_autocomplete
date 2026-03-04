@@ -43,10 +43,10 @@ if len(args) != 1:
 model_filepath = args[0]
 
 if (options.verbose):
-    print "loading ngrams model", model_filepath
+    print("loading ngrams model", model_filepath)
 ngrams_model = pickle.load(open(model_filepath))
 if (options.verbose):
-    print "loaded"
+    print("loaded")
 
 
 run(host='localhost', port=8080)

@@ -11,9 +11,9 @@
 
 import pickle
 import math
-import Queue
+import queue
 import itertools
-import sha
+import hashlib
 from optparse import OptionParser
 
 class NGramsModel():
@@ -27,7 +27,7 @@ class NGramsModel():
         self.long_mem_size = long_mem_size
 
     def encode_long_term(self, text, nchars):
-        return sha.sha(text).hexdigest()[:nchars]
+        return hashlib.sha1(text.encode()).hexdigest()[:nchars]
 
     def sub_string_iterator(self, query):
         query = self.start_char*(self.order) + query + self.end_char
@@ -46,17 +46,17 @@ class NGramsModel():
 
     def insert_string(self, query, frequency, verbose=False):
         for prev_chars, next_char in self.sub_string_iterator(query):
-            if not self.ngrams.has_key(prev_chars):
+            if prev_chars not in self.ngrams:
                 self.ngrams[prev_chars] = {}
                 self.totals[prev_chars] = 0
-            if not self.ngrams[prev_chars].has_key(next_char):
+            if next_char not in self.ngrams[prev_chars]:
                 self.ngrams[prev_chars][next_char] = 0
             self.ngrams[prev_chars][next_char] += frequency
             self.totals[prev_chars] += frequency
         self.inserted += 1
         if verbose:
             if self.inserted % 10000 == 0:
-                print "Inserted", self.inserted
+                print("Inserted", self.inserted)
 
     def likelihood(self, query):
         prob = 1.0
@@ -65,7 +65,7 @@ class NGramsModel():
                 prob *= 1.0/64 # uniform distribution for the alphabet size
                 continue
             count_to_next = 1
-            if self.ngrams[prev_chars].has_key(next_char):
+            if next_char in self.ngrams[prev_chars]:
                 count_to_next = self.ngrams[prev_chars][next_char]
             prob *= 1.0*count_to_next/self.totals[prev_chars]
         return prob
@@ -76,7 +76,7 @@ class NGramsModel():
 
     def suggestions_iterator(self, prefix):
         prefix = self.start_char*(self.order) + prefix
-        pqueue = Queue.PriorityQueue()
+        pqueue = queue.PriorityQueue()
         pqueue.put((0,prefix))
         while not pqueue.empty():
             neg_log_prob, prefix = pqueue.get()
@@ -85,7 +85,7 @@ class NGramsModel():
             else:
                 context_str = self.context(prefix, len(prefix), self.long_mem_size, self.order)
                 if context_str in self.ngrams:
-                    for next_char, counts in self.ngrams[context_str].items():
+                    for next_char, counts in list(self.ngrams[context_str].items()):
                         new_neg_log_prob = neg_log_prob -math.log(1.0*counts/self.totals[context_str])
                         next_context_str = self.context(prefix+next_char, len(prefix)+1, self.long_mem_size, self.order)
                         if next_context_str in self.ngrams or next_char == self.end_char:
@@ -124,7 +124,7 @@ def main():
     ngrams_model = NGramsModel(options.lterm_order, options.ngrams_order, start_char, end_char)
 
     if options.verbose:
-        print "Starting model training"
+        print("Starting model training")
     with open(input_filepath, 'r') as fin:
         line = fin.readline()
         while line != "":
@@ -135,13 +135,13 @@ def main():
             line = fin.readline()
 
     if options.verbose:
-        print "Starting serialization"
+        print("Starting serialization")
     pickle.dump(ngrams_model, open(model_filepath, "wb"))
 
     if options.verbose:
-        print "Empty prefix top completions"
+        print("Empty prefix top completions")
         for sugg in  ngrams_model.suggest("", 10):
-            print sugg
+            print(sugg)
 
     pass
 

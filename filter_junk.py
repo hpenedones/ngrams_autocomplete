@@ -34,9 +34,9 @@ def main():
     input_filepath = args[1]
     output_filepath = args[2]
 
-    print "loading ngrams model...", model_filepath
+    print("loading ngrams model...", model_filepath)
     ngrams_model = pickle.load(open(model_filepath))
-    print "loaded!"
+    print("loaded!")
 
     count = 0
     with open(output_filepath, "w") as fout:
@@ -54,7 +54,7 @@ def main():
                     outstring = str(count) + "\t" + query + "\t" + str(frequency) + "\t" + str(neg_log_like)
                     fout.write(outstring + "\n")
                     if options.verbose:
-                        print outstring
+                        print(outstring)
                 line = fin.readline()
 
     pass
