@@ -10,6 +10,7 @@
 #-------------------------------------------------------------------------------
 
 import pickle
+import gzip
 import math
 import queue
 import itertools
@@ -116,7 +117,7 @@ def main():
         parser.error("incorrect number of arguments")
 
     input_filepath = args[0]
-    model_filepath = 'ngrams%d_%d.model' % (options.lterm_order, options.ngrams_order)
+    model_filepath = 'ngrams%d_%d.model.gz' % (options.lterm_order, options.ngrams_order)
 
     start_char = "["
     end_char = "]"
@@ -136,7 +137,7 @@ def main():
 
     if options.verbose:
         print("Starting serialization")
-    pickle.dump(ngrams_model, open(model_filepath, "wb"))
+    pickle.dump(ngrams_model, gzip.open(model_filepath, "wb"), protocol=pickle.HIGHEST_PROTOCOL)
 
     if options.verbose:
         print("Empty prefix top completions")

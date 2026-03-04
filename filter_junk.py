@@ -13,6 +13,7 @@
 from ngrams_model import NGramsModel
 from optparse import OptionParser
 import pickle
+import gzip
 
 
 def main():
@@ -35,7 +36,7 @@ def main():
     output_filepath = args[2]
 
     print("loading ngrams model...", model_filepath)
-    ngrams_model = pickle.load(open(model_filepath))
+    ngrams_model = pickle.load(gzip.open(model_filepath, "rb"))
     print("loaded!")
 
     count = 0

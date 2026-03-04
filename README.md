@@ -28,12 +28,20 @@ Options:
 - `-f` / `--column_number_frequency` — zero-based column index of the frequency (default: 1)
 - `-v` / `--verbose` — print progress info
 
-Output: a serialized model file named `ngrams<lterm>_<order>.model`.
+Output: a serialized model file named `ngrams<lterm>_<order>.model.gz`.
 
 ### 2. Start the autocomplete server
 
+A pre-trained model (`ngrams2_3.model.gz`) trained on `aol_top500k.tsv` is included in the repository. To launch directly:
+
 ```bash
-python server.py [options] ngrams_model_filepath
+python server.py ngrams2_3.model.gz
+```
+
+Or with your own model:
+
+```bash
+python server.py [options] path/to/model.gz
 ```
 
 Options:
