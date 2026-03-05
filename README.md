@@ -2,6 +2,8 @@
 
 A character-based n-grams language model for probabilistic query autocomplete. Given a text prefix, it suggests the most likely completions based on a trained model.
 
+![Demo](demo.gif)
+
 ## How it works
 
 The model is trained on a corpus of queries (TSV format) and learns character-level n-gram statistics. It uses a priority queue-based beam search to generate ranked completions for any given prefix. A long-term memory component (hashed prefix) complements the short-range n-gram context.
